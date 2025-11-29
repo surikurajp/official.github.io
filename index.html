@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>すりクラ公式サイト</title>
+</head>
+<body>
+  <h1>すりクラ公式サイト</h1>
+
+  <h2><a href="news.html">お知らせ</a></h2>
+  <div id="news-list">読み込み中...</div>
+
+  <script>
+    async function loadNews() {
+      const response = await fetch("./news/");
+      const text = await response.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+
+      // news/ ディレクトリ内の *.md を取得
+      const links = [...doc.querySelectorAll("a")]
+        .map(a => a.getAttribute("href"))
+        .filter(href => href.endsWith(".md"))
+        .reverse(); // 新しい順になることが多い
+
+      const latest3 = links.slice(0, 3);
+
+      const container = document.getElementById("news-list");
+      container.innerHTML = "";
+
+      for (const file of latest3) {
+        const md = await fetch("./news/" + file).then(r => r.text());
+        const title = md.match(/title:\s*(.*)/)?.[1] ?? "タイトルなし";
+        const date = md.match(/date:\s*(.*)/)?.[1] ?? "日付なし";
+
+        const item = document.createElement("div");
+        item.innerHTML = `<strong>${title}</strong> (${date})`;
+        container.appendChild(item);
+      }
+    }
+
+    loadNews();
+  </script>
+</body>
+</html>
