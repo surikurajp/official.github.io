@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>お知らせ一覧 - すりクラ</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
 </head>
-
 <body>
 
 <header class="navbar">
-  <div class="nav-logo">すりクラ</div>
-  <nav class="nav-links" id="navLinks">
-    <a href="index.html">ホーム</a>
-    <a href="news.html">お知らせ</a>
-  </nav>
-
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
+  <div class="nav-container">
+    <div class="logo">すりクラ</div>
+    <nav id="navMenu">
+      <a href="index.html#about">サーバー概要</a>
+      <a href="index.html#links">リンク</a>
+      <a href="news.html">お知らせ</a>
+    </nav>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
   </div>
 </header>
 
-<section class="section">
+<section class="section" style="padding-top: 80px;">
   <h2>お知らせ一覧</h2>
   <div id="news-list"></div>
 </section>
 
+<footer>
+  <p>© 2025 すりクラ</p>
+</footer>
+
 <script>
 function toggleMenu() {
-  document.getElementById("navLinks").classList.toggle("active");
+  document.getElementById("navMenu").classList.toggle("show");
 }
 
 async function loadNews() {
@@ -44,35 +47,34 @@ async function loadNews() {
   for (const file of files) {
     const mdResponse = await fetch(file.download_url);
     const mdText = await mdResponse.text();
-    const frontMatterMatch = mdText.match(/^---\n([\s\S]*?)\n---/);
 
-    let title = "タイトル不明";
-    let date = "日付なし";
+    const match = mdText.match(/^---\n([\s\S]*?)\n---/);
+
+    let title = "タイトルなし";
+    let date = "";
     let body = mdText;
 
-    if (frontMatterMatch) {
-      const fm = frontMatterMatch[1];
+    if (match) {
+      const fm = match[1];
 
-      const titleMatch = fm.match(/title:\s*(.*)/);
-      if (titleMatch) title = titleMatch[1];
+      const t = fm.match(/title:\s*(.*)/);
+      if (t) title = t[1];
 
-      const dateMatch = fm.match(/date:\s*(.*)/);
-      if (dateMatch) date = new Date(dateMatch[1]).toLocaleDateString("ja-JP");
+      const d = fm.match(/date:\s*(.*)/);
+      if (d) date = new Date(d[1]).toLocaleDateString("ja-JP");
 
-      body = mdText.replace(frontMatterMatch[0], "").trim();
+      body = mdText.replace(match[0], "");
     }
 
-    const htmlBody = marked.parse(body);
+    const html = marked.parse(body);
 
-    const div = document.createElement("div");
-    div.className = "news-card";
-    div.innerHTML = `
-      <h3>${title}</h3>
-      <p class="date">${date}</p>
-      <div>${htmlBody}</div>
+    container.innerHTML += `
+      <div class="news-card">
+        <h3>${title}</h3>
+        <p style="color:#777;">${date}</p>
+        <div>${html}</div>
+      </div>
     `;
-
-    container.appendChild(div);
   }
 }
 
