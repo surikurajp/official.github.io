@@ -2,40 +2,78 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>お知らせ一覧 | すりクラ</title>
+  <title>お知らせ一覧 | すりクラ公式サイト</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    h1 { margin-bottom: 20px; }
+    .news-item { margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #ddd; }
+    .news-title { font-size: 1.2em; font-weight: bold; }
+    .news-date { color: #666; font-size: 0.9em; }
+  </style>
 </head>
 <body>
+
   <h1>お知らせ一覧</h1>
   <div id="news-list">読み込み中...</div>
 
   <script>
     async function loadNews() {
+      const container = document.getElementById("news-list");
+
+      // newsフォルダの一覧を取得
       const response = await fetch("./news/");
       const text = await response.text();
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(text, "text/html");
 
-      const links = [...doc.querySelectorAll("a")]
-        .map(a => a.getAttribute("href"))
+      // ディレクトリ内の *.md を抽出
+      const files = [...doc.querySelectorAll("a")]
+        .map(a => a.href)
         .filter(href => href.endsWith(".md"))
-        .reverse();
+        .map(href => href.split("/").pop());
 
-      const container = document.getElementById("news-list");
+      if (files.length === 0) {
+        container.innerHTML = "お知らせはありません。";
+        return;
+      }
+
+      const posts = [];
+
+      // 各MDからFrontmatter抽出
+      for (const file of files) {
+        const md = await fetch("./news/" + file).then(r => r.text());
+
+        const titleMatch = md.match(/title:\s*(.*)/);
+        const dateMatch = md.match(/date:\s*(.*)/);
+
+        const title = titleMatch ? titleMatch[1].trim() : "タイトルなし";
+        const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date(0);
+
+        posts.push({ title, date, file });
+      }
+
+      // 新しい順にソート
+      posts.sort((a, b) => b.date - a.date);
+
+      // 表示
       container.innerHTML = "";
 
-      for (const file of links) {
-        const md = await fetch("./news/" + file).then(r => r.text());
-        const title = md.match(/title:\s*(.*)/)?.[1] ?? "タイトルなし";
-        const date = md.match(/date:\s*(.*)/)?.[1] ?? "日付なし";
-
+      posts.forEach(post => {
         const item = document.createElement("div");
-        item.innerHTML = `<strong>${title}</strong> (${date})`;
+        item.className = "news-item";
+
+        item.innerHTML = `
+          <div class="news-title">${post.title}</div>
+          <div class="news-date">${post.date.toLocaleDateString()}</div>
+        `;
+
         container.appendChild(item);
-      }
+      });
     }
 
     loadNews();
   </script>
+
 </body>
 </html>
