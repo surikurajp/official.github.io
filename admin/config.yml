@@ -1,10 +1,7 @@
 backend:
   name: github
-  repo: surikurajp/official.github.io    # ←あなたのGitHubリポジトリに変更
-  branch: main                       # 必要に応じて変更
-  auth_scope: repo
-
-publish_mode: editorial_workflow
+  repo: surikurajp/official.github.io
+  branch: main                     
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
