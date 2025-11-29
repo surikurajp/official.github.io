@@ -1,0 +1,21 @@
+backend:
+  name: github
+  repo: surikurajp/official.github.io    # ←あなたのGitHubリポジトリに変更
+  branch: main                       # 必要に応じて変更
+  auth_scope: repo
+
+publish_mode: editorial_workflow
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "news"
+    label: "お知らせ"
+    folder: "news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "タイトル", name: "title", widget: "string" }
+      - { label: "日付", name: "date", widget: "datetime" }
+      - { label: "本文", name: "body", widget: "markdown" }
