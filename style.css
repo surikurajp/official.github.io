@@ -1,0 +1,95 @@
+/* 全体 */
+body {
+  margin: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f4f6f8;
+  color: #333;
+}
+
+/* ヒーローヘッダー */
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+.hero-img {
+  width: 100%;
+  max-width: 900px;
+  border-radius: 12px;
+}
+.site-title {
+  margin: 20px 0 5px;
+  font-size: 2.2rem;
+}
+.site-sub {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* セクション */
+.section {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+.section h2 {
+  margin-bottom: 16px;
+  font-size: 1.6rem;
+}
+
+/* リンクカード */
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.link-card {
+  display: block;
+  background: #e7eef7;
+  padding: 14px;
+  text-align: center;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  transition: 0.2s;
+}
+.link-card:hover {
+  background: #d8e4f5;
+}
+
+/* お知らせカード */
+.news-card {
+  padding: 16px;
+  margin-bottom: 15px;
+  border-left: 4px solid #77aaff;
+  background: #fafcff;
+  border-radius: 8px;
+}
+.news-card h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+}
+.news-card .date {
+  color: #777;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.more-link {
+  text-decoration: underline;
+  color: #3366cc;
+}
+
+/* フッター */
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+  background: #eef1f4;
+  color: #666;
+}
