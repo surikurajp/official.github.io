@@ -166,3 +166,7 @@ footer {
   text-shadow: 0 4px 12px #000;
 }
 
+.fade-section {
+  opacity: 0;
+  transform: translateY(40px);
+}
