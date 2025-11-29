@@ -1,6 +1,4 @@
-/* -------------------------
-   ベースデザイン
--------------------------- */
+
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
@@ -15,9 +13,7 @@ h2 {
   color: #2a8f3f;
 }
 
-/* -------------------------
-   ナビバー
--------------------------- */
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -50,7 +46,6 @@ h2 {
   opacity: 0.7;
 }
 
-/* ハンバーガー */
 .hamburger {
   display: none;
   cursor: pointer;
@@ -65,9 +60,7 @@ h2 {
   border-radius: 3px;
 }
 
-/* -------------------------
-   スマホ対応
--------------------------- */
+
 @media (max-width: 820px) {
   .nav-links {
     position: absolute;
@@ -89,9 +82,7 @@ h2 {
   }
 }
 
-/* -------------------------
-   ヘッダー画像
--------------------------- */
+
 .hero-img {
   width: 100%;
   height: auto;
@@ -100,18 +91,14 @@ h2 {
   display: block;
 }
 
-/* -------------------------
-   セクション
--------------------------- */
+
 .section {
-  padding: 40px 20px;
+  padding: 20px 20px;
   max-width: 900px;
   margin: auto;
 }
 
-/* -------------------------
-   リンク一覧
--------------------------- */
+
 .link-list li {
   list-style: none;
   margin-bottom: 10px;
@@ -127,9 +114,7 @@ h2 {
   text-decoration: underline;
 }
 
-/* -------------------------
-   お知らせカード
--------------------------- */
+
 .news-card {
   background: white;
   padding: 18px;
@@ -148,9 +133,7 @@ h2 {
   font-size: 0.9rem;
 }
 
-/* -------------------------
-   フッター
--------------------------- */
+
 footer {
   text-align: center;
   padding: 20px;
