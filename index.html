@@ -5,63 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>すりクラ公式サイト</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
+
 <body>
-
-<!-- ナビバー -->
-<header class="navbar">
-  <div class="nav-container">
-    <div class="logo">すりクラ</div>
-    <nav id="navMenu">
-      <a href="#about">サーバー概要</a>
-      <a href="#links">リンク</a>
+  <!-- ナビバー -->
+  <header class="navbar">
+    <div class="nav-logo">すりクラ</div>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">ホーム</a>
       <a href="news.html">お知らせ</a>
+      <a href="#links">リンク</a>
+      <a href="#about">サーバー説明</a>
     </nav>
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-  </div>
-</header>
 
-<!-- Apple風アニメーションヒーロー -->
-<section class="hero" id="hero">
-  <img src="header.png" class="hero-image" id="heroImage" />
-  <h1 class="hero-title" id="heroTitle">すりクラ 公式サイト</h1>
-</section>
+    <!-- ハンバーガーメニュー -->
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </header>
 
-<!-- サーバー概要 -->
-<section class="section" id="about">
-  <h2>サーバー概要</h2>
-  <p>
-    すりクラは統合版の生活サーバーです。初心者でも安心して楽しめる環境づくりを行っています。
-    経済・ショップ・保護システムなど多くの便利機能を搭載！
-  </p>
-</section>
+  <!-- ヘッダー画像 -->
+  <section class="hero">
+    <img src="header.png" alt="header" class="hero-img">
+  </section>
 
-<!-- お知らせ（最新3件） -->
-<section class="section" id="news">
-  <h2>最新のお知らせ</h2>
-  <div id="latest-news"></div>
-  <div style="margin-top: 10px;">
-    <a href="news.html" class="news-link">→ 過去のお知らせを見る</a>
-  </div>
-</section>
+  <!-- サーバー説明 -->
+  <section class="section" id="about">
+    <h2>サーバーの詳細</h2>
+    <p>
+      すりクラは **マイクラ統合版(Bedrock)** の生活サーバーです。  
+      経済・ショップ・土地保護・便利コマンドなど、快適に遊べる環境を整えています。  
+      初心者歓迎！だれでも自由に参加できます。
+    </p>
+  </section>
 
-<!-- リンク -->
-<section class="section" id="links">
-  <h2>リンク</h2>
-  <ul>
-    <li><a href="https://discord.gg/">Discord</a></li>
-    <li><a href="https://minecraft.net/">Minecraft 公式</a></li>
-  </ul>
-</section>
+  <!-- お知らせ（最新3件） -->
+  <section class="section" id="news">
+    <h2>最新のお知らせ</h2>
+    <div id="news-list"></div>
+    <div class="more"><a href="news.html">→ 過去のお知らせも見る</a></div>
+  </section>
 
-<footer>
-  <p>© 2025 すりクラ</p>
-</footer>
+  <!-- リンク -->
+  <section class="section" id="links">
+    <h2>リンク</h2>
+    <ul class="link-list">
+      <li><a href="https://discord.com/invite/fxZ5EcyRxn" target="_blank">Discord サーバー</a></li>
+      <li><a href="https://github.com/surikurajp" target="_blank">GitHub</a></li>
+      <li><a href="/admin" target="_blank">管理者ログイン（Netlify CMS）</a></li>
+    </ul>
+  </section>
 
-<script src="script.js"></script>
+  <footer>
+    © 2025 すりクラ - Surikura Server
+  </footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById("navLinks").classList.toggle("active");
+}
+
+// 最新3件のお知らせ
+async function loadNews() {
+  const repo = "surikurajp/official.github.io";
+  const response = await fetch(`https://api.github.com/repos/${repo}/contents/news`);
+  const files = await response.json();
+
+  // 日付順ソート（新しい順）
+  files.sort((a, b) => new Date(b.name) - new Date(a.name));
+
+  const container = document.getElementById("news-list");
+  let count = 0;
+
+  for (const file of files) {
+    if (count >= 3) break;
+
+    const mdResponse = await fetch(file.download_url);
+    const mdText = await mdResponse.text();
+    const frontMatterMatch = mdText.match(/^---\n([\s\S]*?)\n---/);
+
+    let title = "タイトル不明";
+    let date = "日付なし";
+    let body = mdText;
+
+    if (frontMatterMatch) {
+      const fm = frontMatterMatch[1];
+
+      const titleMatch = fm.match(/title:\s*(.*)/);
+      if (titleMatch) title = titleMatch[1];
+
+      const dateMatch = fm.match(/date:\s*(.*)/);
+      if (dateMatch) date = new Date(dateMatch[1]).toLocaleDateString("ja-JP");
+
+      body = mdText.replace(frontMatterMatch[0], "").trim();
+    }
+
+    const div = document.createElement("div");
+    div.className = "news-card";
+    div.innerHTML = `
+      <h3>${title}</h3>
+      <p class="date">${date}</p>
+      <p>${body.substring(0, 80)}...</p>
+    `;
+
+    container.appendChild(div);
+    count++;
+  }
+}
+loadNews();
+</script>
+
 </body>
 </html>
-
